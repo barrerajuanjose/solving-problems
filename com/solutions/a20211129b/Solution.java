@@ -39,29 +39,18 @@ public class Solution {
 
                 String d = firstMultipleInput[2];
 
-                Map<String, List<Integer>> healthIndex = new HashMap<>();
-                for (int i = first; i <= last; i++) {
-                    String geneKey = genes.get(i);
-                    List<Integer> values = healthIndex.get(geneKey);
-                    if (values == null) {
-                        values = new ArrayList<>();
-                    }
-                    values.add(health.get(i));
-                    healthIndex.put(geneKey, values);
-                }
-
                 int healthDNA = 0;
 
-                for (int i = 0; i < d.length(); i++) {
-                    for (int j = d.length(); i <= j; j--) {
-                        List<Integer> subHealth = healthIndex.get(d.substring(i, j));
+                for (int i = first; i <= last; i++) {
+                    String gen = genes.get(i);
+                    int index = d.indexOf(gen);
+                    int repeted = 0;
 
-                        if (subHealth != null) {
-                            healthDNA += subHealth.stream().collect(Collectors.summingInt(l -> l));
-                            break;
-                        }
-
+                    while (index >= 0) {
+                        repeted++;
+                        index = d.indexOf(gen, index + 1);
                     }
+                    healthDNA += health.get(i) * repeted;
                 }
 
                 if (healthDNA < min) {
