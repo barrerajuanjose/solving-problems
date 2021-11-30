@@ -24,7 +24,7 @@ public class Solution {
         boolean[] visited = new boolean[A+1];
         int current;
 
-        Queue<Integer> queue = new ArrayBlockingQueue<>();
+        Queue<Integer> queue = new ArrayBlockingQueue<>(graph.size());
         queue.add(B[0][0]);
 
         while (!queue.isEmpty()) {
