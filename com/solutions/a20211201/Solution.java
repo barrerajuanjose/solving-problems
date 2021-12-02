@@ -23,7 +23,7 @@ class Result {
 
     public static int connectedCell(Integer[][] matrix) {
         // Write your code here
-        int[] regions = new int[Math.max(matrix.length, matrix[0].length)];
+        int[] regions = new int[matrix.length * matrix[0].length];
         boolean hasRegions = false;
         int amountRegions = 2;
         for (int i = 0; i < matrix.length; i++) {
@@ -31,6 +31,7 @@ class Result {
                 if (matrix[i][j] == 1) {
                     hasRegions = true;
                     int regionId = getRegionId(matrix, i, j, amountRegions);
+                    amountRegions = regionId;
 
                     if (regionId > 1) {
                         regions[regionId] += 1;
@@ -38,7 +39,21 @@ class Result {
                 }
             }
         }
-        return hasRegions ? Math.max(2, Arrays.stream(regions).max().orElse(1)) - 1 : 0;
+
+        for (int i = 0; i < matrix.length; i++) {
+            StringBuffer buff = new StringBuffer();
+            for (int j = 0; j < matrix[0].length; j++) {
+                buff.append(matrix[i][j] + " ");
+            }
+            System.out.println(buff);
+        }
+        System.out.println("#######");
+        StringBuffer buff = new StringBuffer();
+        for (int i = 0; i < regions.length; i++) {
+            buff.append(regions[i] + " ");
+        }
+        System.out.println(buff);
+        return hasRegions ? Math.max(1, Arrays.stream(regions).max().orElse(1)) : 0;
     }
 
     private static int getRegionId(Integer[][] matrix, int i, int j, int amountRegions) {
@@ -71,11 +86,14 @@ class Result {
             maxPartner = matrix[Math.min(matrix.length - 1, i + 1)][Math.min(matrix[0].length - 1, j + 1)];
         }
 
+        System.out.println(maxPartner + " " + matrix[i][j] + " " + i + " " + j);
         if (maxPartner == 1) {
             amountRegions++;
-            matrix[i][j] = amountRegions;
+            maxPartner = amountRegions;
         }
-
+     
+        matrix[i][j] = maxPartner;
+     
         return matrix[i][j];
     }
 
@@ -84,24 +102,9 @@ class Result {
 public class Solution {
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int n = Integer.parseInt(bufferedReader.readLine().trim());
-
-        int m = Integer.parseInt(bufferedReader.readLine().trim());
-
-        Integer[][] matrix = new Integer[n][m];
-
-        IntStream.range(0, n).forEach(i -> {
-            try {
-                matrix[i] = 
-                        Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
-                                .map(Integer::parseInt)
-                                .collect(toList()).toArray(new Integer[m]);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+        Integer[][] matrix = {{1, 1, 0, 0, 0}, {0, 1, 1, 0, 0}, {0, 0, 1, 0, 1}, {1, 0, 0, 0, 1}, {0, 1, 0, 1, 1}};
 
         int result = Result.connectedCell(matrix);
 
